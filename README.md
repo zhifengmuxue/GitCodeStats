@@ -23,8 +23,8 @@
 ### 1. 下载项目
 
 ```bash
-git clone https://github.com/你的用户名/代码仓库名称.git
-cd 代码仓库名称
+git clone https://github.com/zhifengmuxue/GitCodeStats.git
+cd GitCodeStats
 ```
 
 ### 2. 配置设置
