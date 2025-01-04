@@ -34,4 +34,12 @@ ENV/
 
 # 系统
 .DS_Store
-Thumbs.db 
+Thumbs.db
+
+# 发布包和临时文件
+GitCodeStats-*/
+*.zip
+*.tar.gz
+*.rar
+release/
+dist/ 
