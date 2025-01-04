@@ -47,6 +47,12 @@ SHOW_PROGRESS = True
 
 # Git用户名（可选）
 GIT_USERNAME = 
+
+# 是否配置环境变量（True/False）
+SETUP_ENV_PATH = True
+
+# conda安装路径（可选，留空则自动检测）
+CONDA_INSTALL_PATH = 
 ```
 
 ### 3. 运行工具
@@ -142,8 +148,21 @@ project/
 
 ## 更新日志
 
-### v1.0.0 (2025-01-03)
+### v1.0.1 (2025-01-04)
 - 首次发布
 - 支持多仓库统计
 - 添加配置文件支持
 - 提供跨平台运行脚本
+- 添加环境变量配置
+
+### 环境变量配置
+
+在`config.ini`中，你可以设置是否自动配置环境变量：
+
+- `SETUP_ENV_PATH`: 设置为True时会自动配置conda环境变量
+- `CONDA_INSTALL_PATH`: 可以手动指定conda的安装路径（可选）
+
+注意：
+- 首次配置环境变量可能需要重启终端才能生效
+- Windows用户可能需要以管理员权限运行脚本才能设置环境变量
+- 如果conda已在PATH中，可以将`SETUP_ENV_PATH`设置为False
