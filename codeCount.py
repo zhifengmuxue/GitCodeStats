@@ -86,8 +86,14 @@ def get_modifications_in_one(auth, path, days=1):
         for line in stdout.decode('utf-8').strip().split('\n'):
             parts = line.split()
             if len(parts) >= 2:
-                added_lines += int(parts[0])
-                removed_lines += int(parts[1])
+                try:
+                    added = int(parts[0]) if parts[0] != '-' else 0
+                    removed = int(parts[1]) if parts[1] != '-' else 0
+                    added_lines += added
+                    removed_lines += removed
+                except ValueError:
+                    # 如果转换失败，跳过这行
+                    continue
 
         return added_lines, removed_lines
     else:
