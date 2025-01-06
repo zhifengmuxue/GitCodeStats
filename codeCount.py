@@ -5,6 +5,9 @@ from datetime import datetime, timedelta
 import argparse
 import configparser
 
+# 版本号
+VERSION = "1.0.1"
+
 def load_config():
     """
     加载配置文件
