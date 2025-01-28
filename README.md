@@ -72,7 +72,36 @@ chmod +x run_unix.sh
 ./run_unix.sh
 ```
 
-### 4. 命令行高级用法
+### 4. 快速使用
+#### Linux/Mac 用户
+
+1. 打开终端并创建一个新的shell脚本文件，例如count.sh：
+```bash
+    touch count.sh
+```
+2. 编辑`count.sh`文件，添加以下内容：
+    
+```bash
+#!/bin/bash
+python /path/to/your/codeCount.py "$@"
+```
+请将`/path/to/your/codeCount.py`替换为`codeCount.py`脚本的实际路径。
+
+3. 保存并关闭文件，然后使脚本可执行：
+    
+```bash
+chmod +x count.sh
+```
+4. 将脚本移动到一个在`$PATH`中的目录，例如`/usr/local/bin`：
+    
+```bash
+sudo mv count.sh /usr/local/bin/count
+```
+现在，你可以在终端中直接运行`count`命令来执行`codeCount.py`脚本。
+
+
+
+### 5. 命令行高级用法
 
 如果你需要更灵活的控制，可以直接使用命令行参数：
 
