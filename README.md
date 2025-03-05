@@ -77,7 +77,7 @@ chmod +x run_unix.sh
 
 1. 打开终端并创建一个新的shell脚本文件，例如count.sh：
 ```bash
-    touch count.sh
+touch count.sh
 ```
 2. 编辑`count.sh`文件，添加以下内容：
     
