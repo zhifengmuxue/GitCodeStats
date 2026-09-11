@@ -6,7 +6,7 @@ import argparse
 import configparser
 
 # 版本号
-VERSION = "1.0.1"
+VERSION = "1.0.2"
 
 def load_config():
     """
@@ -16,7 +16,10 @@ def load_config():
     config_path = os.path.join(os.path.dirname(__file__), 'config.ini')
     
     if os.path.exists(config_path):
-        config.read(config_path)
+        # 必须显式指定 UTF-8：Windows 中文环境的默认编码是 GBK(cp936)，
+        # 而本项目的 config.ini 以 UTF-8 保存（含中文注释），
+        # 不指定编码会直接抛出 UnicodeDecodeError 导致程序无法启动
+        config.read(config_path, encoding='utf-8')
         return config['DEFAULT']
     else:
         # 返回默认配置
@@ -86,7 +89,8 @@ def get_modifications_in_one(auth, path, days=1):
         added_lines = 0
         removed_lines = 0
 
-        for line in stdout.decode('utf-8').strip().split('\n'):
+        # errors='replace'：文件名等非 UTF-8 字节不应导致整个统计崩溃
+        for line in stdout.decode('utf-8', errors='replace').strip().split('\n'):
             parts = line.split()
             if len(parts) >= 2:
                 try:
@@ -103,12 +107,13 @@ def get_modifications_in_one(auth, path, days=1):
         return 0, 0  # 返回零行数以防止后续处理错误
 
 
-def get_today_modifications(auth, start_path, days=1):
+def get_today_modifications(auth, start_path, days=1, show_progress=True):
     """
     获取指定作者在指定时间段内的代码增删行数
     :param auth:  作者名
     :param start_path:  仓库根目录
     :param days: 统计的天数，默认为1天
+    :param show_progress: 是否显示进度条，默认为True
     :return:  tuple(int, int) 返回代码增加行数和删除行数
     """
     # 查找所有 Git 仓库
@@ -118,7 +123,7 @@ def get_today_modifications(auth, start_path, days=1):
     total_added = 0
     total_removed = 0
 
-    for repo in tqdm(git_repos):
+    for repo in tqdm(git_repos, disable=not show_progress):
         added, removed = get_modifications_in_one(auth, repo, days)
         total_added += added
         total_removed += removed
@@ -132,7 +137,7 @@ def get_git_username(path):
     stdout, _ = process.communicate()
 
     if process.returncode == 0:
-        return stdout.decode('utf-8').strip()
+        return stdout.decode('utf-8', errors='replace').strip()
     else:
         return None
 
@@ -140,22 +145,35 @@ def get_git_username(path):
 if __name__ == '__main__':
     # 加载配置
     config = load_config()
-    default_path = config.get('DEFAULT_PATH')
+    default_path = (config.get('DEFAULT_PATH') or '').strip()
+
+    # 读取是否显示进度条（兼容大小写与多余空格）
+    show_progress = str(config.get('SHOW_PROGRESS', 'True')).strip().lower() in ('true', '1', 'yes', 'on')
+
+    # 读取默认天数（配置非法时回退为 1）
+    default_days = str(config.get('DEFAULT_DAYS', '1')).strip()
+    if not default_days.isdigit():
+        default_days = '1'
     
     # 创建命令行参数解析器
     parser = argparse.ArgumentParser(description='统计Git仓库代码修改行数')
     parser.add_argument('-p', '--path', default=default_path,
-                       help=f'指定要统计的根目录路径，默认为 {default_path}')
-    parser.add_argument('-d', '--days', type=int, default=int(config.get('DEFAULT_DAYS')),
+                       help='指定要统计的根目录路径，未指定时读取 config.ini 中的 DEFAULT_PATH')
+    parser.add_argument('-d', '--days', type=int, default=int(default_days),
                        help='指定要统计的天数，默认为1天')
     parser.add_argument('-u', '--user', default=config.get('GIT_USERNAME'),
                        help='指定Git用户名，如果不指定则使用仓库配置的用户名')
+    parser.add_argument('-v', '--version', action='version', version=f'%(prog)s {VERSION}',
+                       help='显示版本号并退出')
     
     args = parser.parse_args()
     
     try:
         # 处理路径格式
-        repo_path = args.path.replace("\\", "/")
+        repo_path = (args.path or '').strip().replace("\\", "/")
+        if not repo_path:
+            print("错误：未指定统计路径，请使用 -p 参数指定，或在 config.ini 中设置 DEFAULT_PATH")
+            exit(1)
         
         # 获取用户名
         auth = args.user if args.user else get_git_username(repo_path)
@@ -164,7 +182,7 @@ if __name__ == '__main__':
             exit(1)
             
         # 获取统计结果
-        added, removed = get_today_modifications(auth, repo_path, args.days)
+        added, removed = get_today_modifications(auth, repo_path, args.days, show_progress)
         print("用户: ", auth)
         print(f"总代码增加量: {added}, 总代码删除量: {removed}")
         

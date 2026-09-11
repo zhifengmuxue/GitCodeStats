@@ -15,8 +15,12 @@
 
 在使用本工具前，请确保你的系统已安装：
 
-1. [Anaconda](https://www.anaconda.com/download) 或 [Miniconda](https://docs.conda.io/en/latest/miniconda.html)
-2. [Git](https://git-scm.com/downloads)
+1. [Git](https://git-scm.com/downloads)
+2. Python 环境（以下二选一）：
+   - [Anaconda](https://www.anaconda.com/download) 或 [Miniconda](https://docs.conda.io/en/latest/miniconda.html)：可配合 `run_windows.bat` / `run_unix.sh` 自动创建并激活环境
+   - 任意 Python 3.8+ 解释器：执行 `pip install -r requirements.txt` 即可
+
+> 说明：conda 并非必需。本项目唯一的第三方依赖是 `tqdm`，如果本机已有 Python，可以直接运行 `python codeCount.py -p "你的项目根目录" -d 7`，无需安装 conda。
 
 ## 快速开始
 
