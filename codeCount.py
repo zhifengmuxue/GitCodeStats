@@ -1,9 +1,16 @@
 import os
+import sys
+import io
 import subprocess
 from tqdm import tqdm
 from datetime import datetime, timedelta
 import argparse
 import configparser
+
+# 修复 Windows 控制台中文输出乱码
+if sys.platform == 'win32':
+    sys.stdout = io.TextIOWrapper(sys.stdout.buffer, encoding='utf-8')
+    sys.stderr = io.TextIOWrapper(sys.stderr.buffer, encoding='utf-8')
 
 # 版本号
 VERSION = "1.0.2"
@@ -150,9 +157,9 @@ if __name__ == '__main__':
     # 读取是否显示进度条（兼容大小写与多余空格）
     show_progress = str(config.get('SHOW_PROGRESS', 'True')).strip().lower() in ('true', '1', 'yes', 'on')
 
-    # 读取默认天数（配置非法时回退为 1）
+    # 读取默认天数（配置非法或为空时回退为 1）
     default_days = str(config.get('DEFAULT_DAYS', '1')).strip()
-    if not default_days.isdigit():
+    if not default_days or not default_days.isdigit():
         default_days = '1'
     
     # 创建命令行参数解析器

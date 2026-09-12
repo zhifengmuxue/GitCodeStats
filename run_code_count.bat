@@ -17,7 +17,7 @@ for /f "tokens=2 delims==" %%a in ('findstr "CONDA_ENV_NAME" config.ini') do set
 if not "!CONDA_ENV_NAME!"=="" set "CONDA_ENV_NAME=!CONDA_ENV_NAME: =!"
 
 :: 激活conda环境
-call conda activate %CONDA_ENV_NAME%
+call conda activate !CONDA_ENV_NAME!
 
 :: 执行Python脚本
 python codeCount.py %*
