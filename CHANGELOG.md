@@ -2,6 +2,9 @@
 
 ## [Unreleased]
 
+### 新增
+- 添加 AI Agent Skill 支持（`SKILL.md`），可集成到 OpenCode / Claude Code 等 Agent 中，通过关键词触发自动统计
+
 ### 修复
 - 修复 Windows 中文环境（系统默认编码 GBK/cp936）下读取 UTF-8 的 `config.ini` 抛出 `UnicodeDecodeError`、工具完全无法启动的问题；`config.read()` 显式指定 `encoding='utf-8'`
 - 修复 `run_windows.bat` 使用 `setx PATH "...;%PATH%"` 覆盖并固化用户 PATH 的问题（可能触发 setx 的 1024 字符截断），改为提示用户手动配置

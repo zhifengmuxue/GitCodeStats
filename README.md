@@ -133,13 +133,19 @@ python codeCount.py -p "D:/项目路径" -d 30 -u "用户名"
 ### 1. 找不到conda命令
 确保已正确安装Anaconda或Miniconda，并将其添加到系统环境变量中。
 
-### 2. 统计结果为0
+### 2. `python` 命令打开应用商店
+Windows 10/11 的 `python` 可能指向 Microsoft Store 空壳。解决方法：
+- 安装 [Python 官网](https://www.python.org/downloads/) 版本并勾选"Add to PATH"
+- 或使用 conda 环境：`conda run -n <环境名> python codeCount.py ...`
+- 或指定完整路径：`C:\Users\<用户名>\.conda\envs\<环境名>\python.exe codeCount.py ...`
+
+### 3. 统计结果为0
 可能的原因：
 - Git用户名配置不正确
 - 指定的时间范围内没有提交记录
 - 项目路径设置错误
 
-### 3. 权限不足
+### 4. 权限不足
 在Linux/Mac上运行时，确保已经给予运行脚本的执行权限：
 ```bash
 chmod +x run_unix.sh
@@ -152,6 +158,22 @@ chmod +x run_unix.sh
 3. 统计每个仓库的代码增删行数
 4. 汇总显示最终结果
 
+## AI Agent Skill
+
+本工具可作为 [OpenCode](https://opencode.ai) / Claude Code 等 AI Agent 的 Skill 使用。将 `codeCount.py`、`config.ini`、`requirements.txt` 和 `SKILL.md` 放入 Agent 的 skills 目录后，Agent 会在用户提到"统计代码量"、"git 贡献"等关键词时自动加载并执行统计。
+
+Skill 目录结构：
+
+```
+skills/git-code-stats/
+├── SKILL.md           # Skill 描述文件
+├── codeCount.py       # 主程序
+├── config.ini         # 配置文件
+└── requirements.txt   # Python依赖
+```
+
+详见 [SKILL.md](SKILL.md)。
+
 ## 目录结构
 
 ```
@@ -159,6 +181,7 @@ project/
 ├── codeCount.py      # 主程序
 ├── config.ini        # 配置文件
 ├── requirements.txt  # Python依赖
+├── SKILL.md          # AI Agent Skill 描述
 ├── run_windows.bat   # Windows启动脚本
 ├── run_unix.sh      # Linux/Mac启动脚本
 └── README.md        # 说明文档
